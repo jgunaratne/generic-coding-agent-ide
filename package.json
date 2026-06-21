@@ -1,0 +1,14 @@
+{
+  "name": "vertex-claude-chat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web chat client for Claude via Google Cloud Vertex AI",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "google-auth-library": "^10.7.0"
+  }
+}
