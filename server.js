@@ -4,11 +4,30 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 
+// Load environment variables from .env file if it exists
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+    const index = trimmed.indexOf('=');
+    if (index > 0) {
+      const key = trimmed.slice(0, index).trim();
+      const val = trimmed.slice(index + 1).trim().replace(/^['"]|['"]$/g, '');
+      process.env[key] = val;
+    }
+  });
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Configuration
-const SUPPORTED_PROJECTS = ['gdm-inception', 'hansel-487018'];
+const SUPPORTED_PROJECTS = (process.env.SUPPORTED_PROJECTS || '')
+  .split(',')
+  .map(p => p.trim())
+  .filter(Boolean);
 let ACTIVE_PROJECT_ID = process.env.GCP_PROJECT_ID || SUPPORTED_PROJECTS[0];
 const REGION = process.env.GCP_REGION || 'us-east5';
 const DEFAULT_MODEL = 'claude-sonnet-4-5';
